@@ -20,6 +20,7 @@ int main(void) {
             exit(1);
         }
     }
+    errno = 0;
     ssize_t written = write(fd, buff, strlen(buff));
     if (written == -1) {
         perror("ERROR");
