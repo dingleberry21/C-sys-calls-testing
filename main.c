@@ -4,13 +4,21 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
+#include <stdlib.h>
 
 int main(void) {
     char *buff = "Man, I LOVE Shrek!";
     int fd = creat("./shrek", S_IRWXU);
-    if (fd == -1) {
+    while (fd == -1) {
+        int err = errno;
         perror("ERROR");
-        exit(1);
+        if (err == EINTR || err == EAGAIN) {
+            fd = creat("./shreck", S_IRWXU);
+        } else {
+            printf("Fuck this shit I'm out.\n");
+            exit(1);
+        }
     }
     ssize_t written = write(fd, buff, strlen(buff));
     if (written == -1) {
